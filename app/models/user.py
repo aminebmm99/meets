@@ -28,9 +28,10 @@ class User(Base):
     )
 
     organization_id: Mapped[int] = mapped_column(
-        ForeignKey("organizations.id"),
-        nullable=False
-    )
+    ForeignKey("organizations.id"),
+    nullable=False,
+    index=True
+)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
