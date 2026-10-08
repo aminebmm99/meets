@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_db
 from app.models.organization import Organization
-from app.schemas.organization import OrganizationCreate, OrganizationResponse
+from app.schemas.organization import (
+    OrganizationCreate,
+    OrganizationResponse,
+    OrganizationUpdate
+)
 
 
 router = APIRouter(
@@ -47,7 +51,7 @@ def get_organizations(
 )
 def update_organization(
     organization_id: int,
-    organization_data: OrganizationCreate,
+    organization_data: OrganizationUpdate,
     db: Session = Depends(get_db)
 ):
     organization = db.get(Organization, organization_id)

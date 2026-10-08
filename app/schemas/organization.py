@@ -7,6 +7,10 @@ class OrganizationCreate(BaseModel):
     name: str
 
 
+class OrganizationUpdate(BaseModel):
+    name: str
+
+
 class OrganizationResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
