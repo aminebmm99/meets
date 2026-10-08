@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SchedulingRequestCreate(BaseModel):
-    duration_minutes: int
+    duration_minutes: int = Field(gt=0)
 
 
 class SchedulingSlot(BaseModel):

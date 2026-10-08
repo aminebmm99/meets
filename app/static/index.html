@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fa">
+  <title>Meets — make time for what matters</title>
+  <style>
+    :root { color-scheme: light; --ink:#17221e; --muted:#738078; --green:#146b50; --line:#e3e9e5; --paper:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f5f7f4; color:var(--ink); font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .shell { min-height:100vh; max-width:1160px; padding:24px 30px 48px; margin:auto; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:10px 0 24px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:700; letter-spacing:-.03em; font-size:19px; }
+    .brand-mark { display:grid; place-items:center; width:34px; height:34px; border-radius:11px; background:var(--green); color:white; }
+    .brand-mark svg { width:19px; }
+    .header-note { color:var(--muted); font-size:13px; }
+    main { max-width:850px; margin:74px auto 0; }
+    .eyebrow { margin:0 0 15px; color:var(--green); font-size:11px; font-weight:750; letter-spacing:.16em; text-transform:uppercase; }
+    h1 { max-width:650px; margin:0; font-size:clamp(38px,6vw,66px); line-height:1.04; letter-spacing:-.06em; font-weight:600; }
+    .lede { max-width:530px; color:#6e7a72; font-size:17px; margin:22px 0 35px; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:18px; box-shadow:0 14px 44px #213b2810; }
+    .login { max-width:420px; padding:27px; }
+    h2 { margin:0; font-size:19px; letter-spacing:-.03em; }
+    .sub { margin:5px 0 21px; color:var(--muted); font-size:13px; }
+    label { display:block; margin:13px 0 6px; font-size:12px; color:#58665e; font-weight:650; }
+    input,button { font:inherit; }
+    input[type=email],input[type=password],.command-input { width:100%; border:1px solid #dfe5e1; border-radius:10px; outline:none; padding:12px 13px; background:#fff; color:var(--ink); }
+    input:focus { border-color:#6ba78e; box-shadow:0 0 0 3px #146b5017; }
+    button { cursor:pointer; border:0; border-radius:10px; padding:11px 17px; color:#fff; background:var(--green); font-weight:650; transition:background .15s,transform .15s; }
+    button:hover { background:#0f5841; transform:translateY(-1px); }
+    button:disabled { opacity:.55; cursor:wait; transform:none; }
+    .login button { width:100%; margin-top:19px; }
+    .switch { text-align:center; color:var(--muted); font-size:13px; margin:17px 0 0; }
+    .text-button { color:var(--green); background:transparent; padding:0; font-size:13px; }
+    .text-button:hover { color:#0f5841; background:transparent; transform:none; text-decoration:underline; }
+    .hint { color:#8b958f; font-size:12px; margin:16px 0 0; }
+    .workspace { margin-top:42px; }
+    .welcome-row { display:flex; justify-content:space-between; align-items:center; margin:0 0 18px; }
+    .welcome-row .sub { margin:4px 0 0; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 17px; }
+    .stat { padding:15px 17px; }
+    .stat span { display:block; color:var(--muted); font-size:11px; }
+    .stat strong { display:block; margin-top:3px; font-size:22px; letter-spacing:-.04em; }
+    .section-row { display:flex; justify-content:space-between; align-items:center; margin:28px 0 12px; }
+    .section-row h2 { font-size:17px; }
+    .search { max-width:220px; padding:9px 11px !important; font-size:12px; }
+    .quiet { background:#eef3f0; color:#46584e; padding:8px 12px; font-size:12px; }
+    .composer { padding:19px; }
+    .compose-title { display:flex; justify-content:space-between; align-items:center; margin:0 0 12px; }
+    .compose-title span { color:var(--muted); font-size:12px; }
+    .input-row { display:flex; gap:10px; }
+    .command-input { padding:14px 15px; font-size:15px; }
+    .examples { display:flex; gap:8px; flex-wrap:wrap; margin-top:13px; }
+    .example { border:1px solid #e4ebe6; border-radius:20px; background:#f9fbf9; color:#637168; padding:6px 10px; font-size:11px; }
+    .example:hover { background:#eef5f0; color:var(--green); }
+    .results { margin-top:20px; }
+    .message { margin:12px 0; padding:13px 15px; border-radius:12px; background:#edf4ef; color:#315340; font-size:14px; }
+    .message.error { background:#fff0ef; color:#a13c32; }
+    .meeting-list { display:grid; gap:10px; margin-top:14px; }
+    .meeting { padding:16px 18px; display:flex; justify-content:space-between; gap:20px; align-items:center; }
+    .meeting h3 { margin:0; font-size:15px; }
+    .meeting p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .badge { white-space:nowrap; padding:5px 9px; border-radius:20px; color:#29664c; background:#e9f4ec; font-size:11px; font-weight:650; text-transform:capitalize; }
+    .meeting-actions { display:flex; align-items:center; gap:11px; }
+    .cancel-button { color:#8a5149; background:transparent; padding:5px; font-size:11px; }
+    .cancel-button:hover { color:#a13c32; background:transparent; transform:none; text-decoration:underline; }
+    .empty { text-align:center; padding:35px 20px; color:var(--muted); }
+    .empty strong { display:block; color:var(--ink); font-size:15px; margin-bottom:5px; }
+    .hidden { display:none !important; }
+    @media(max-width:600px) { .shell{padding:16px 18px 35px} main{margin-top:48px} .lede{font-size:15px} .input-row{flex-direction:column} .input-row button{width:100%}.header-note{display:none}.login{padding:21px}.stats{gap:7px}.stat{padding:12px}.stat strong{font-size:19px}.search{max-width:145px}.meeting{padding:14px;gap:8px}.meeting-actions{gap:6px} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h7"/></svg></span>meets</div>
+      <div class="header-note">A calmer way to get everyone together</div>
+    </header>
+    <main>
+      <p class="eyebrow">Meetings, made simple</p>
+      <h1>Make time for<br>what matters.</h1>
+      <p class="lede">Create a meeting or check what’s on your team’s calendar. Just tell Meets what you need.</p>
+
+      <section class="panel login" id="login-panel">
+        <h2>Welcome back</h2>
+        <p class="sub">Sign in to your workspace to get started.</p>
+        <form id="login-form">
+          <label for="email">Email address</label>
+          <input id="email" type="email" autocomplete="username" placeholder="you@company.com" required>
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+          <button type="submit" id="login-button">Sign in</button>
+        </form>
+        <p class="hint">Demo account: demo@example.com · Meetings123!</p>
+        <div id="login-message"></div>
+        <p class="switch">New to Meets? <button type="button" class="text-button" id="show-register">Create a workspace</button></p>
+      </section>
+
+      <section class="panel login hidden" id="register-panel">
+        <h2>Create your workspace</h2>
+        <p class="sub">Set up your account and invite your team later.</p>
+        <form id="register-form">
+          <label for="org-name">Workspace name</label><input id="org-name" type="text" maxlength="255" placeholder="Acme team" required>
+          <label for="reg-name">Your name</label><input id="reg-name" type="text" maxlength="255" placeholder="Alex Morgan" required>
+          <label for="reg-email">Work email</label><input id="reg-email" type="email" autocomplete="username" placeholder="you@company.com" required>
+          <label for="reg-password">Password</label><input id="reg-password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
+          <button type="submit" id="register-button">Create account</button>
+        </form>
+        <div id="register-message"></div>
+        <p class="switch">Already have an account? <button type="button" class="text-button" id="show-login">Sign in</button></p>
+      </section>
+
+      <section class="workspace hidden" id="workspace">
+        <div class="welcome-row"><div><h2 id="welcome">Your workspace</h2><p class="sub">What would you like to do today?</p></div><button class="quiet" id="logout">Sign out</button></div>
+        <div class="stats">
+          <div class="panel stat"><span>All meetings</span><strong id="total-count">0</strong></div>
+          <div class="panel stat"><span>Open</span><strong id="open-count">0</strong></div>
+          <div class="panel stat"><span>Scheduled</span><strong id="scheduled-count">0</strong></div>
+        </div>
+        <div class="panel composer">
+          <div class="compose-title"><strong>Ask Meets</strong><span>Enter to send</span></div>
+          <form id="command-form" class="input-row">
+          <input class="command-input" id="command" autocomplete="off" placeholder="Try “Schedule Product sync tomorrow at 3pm for 30 minutes”" required>
+            <button id="send-button" type="submit">Send <span aria-hidden="true">↗</span></button>
+          </form>
+          <div class="examples">
+            <button type="button" class="example" data-command="Show my meetings">Show my meetings</button>
+            <button type="button" class="example" data-command="Create a meeting called Product sync">Create a meeting</button>
+            <button type="button" class="example" data-command="Schedule Product sync tomorrow at 3pm for 30 minutes">Add a time</button>
+          </div>
+        </div>
+        <div class="results" id="results" aria-live="polite"></div>
+        <div class="section-row"><h2>Recent meetings</h2><input class="search" id="search" type="search" placeholder="Search meetings"></div>
+        <div class="meeting-list" id="meeting-list"></div>
+      </section>
+    </main>
+  </div>
+<script>
+  const $ = (id) => document.getElementById(id);
+  let token = sessionStorage.getItem('meets_token');
+  let currentUser = null;
+  let meetingsCache = [];
+
+  async function api(path, options = {}) {
+    const response = await fetch(path, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(token ? {Authorization: `Bearer ${token}`} : {}), ...(options.headers || {}) }
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.detail || 'Something went wrong. Please try again.');
+    return payload;
+  }
+  function showMessage(target, message, isError = false) {
+    const box = document.createElement('div'); box.className = `message${isError ? ' error' : ''}`; box.textContent = message;
+    target.replaceChildren(box);
+  }
+  async function enterWorkspace() {
+    currentUser = await api('/users/me');
+    $('welcome').textContent = `Hello, ${currentUser.name.split(' ')[0]}`;
+    $('login-panel').classList.add('hidden'); $('register-panel').classList.add('hidden'); $('workspace').classList.remove('hidden');
+    $('results').replaceChildren(); await refreshMeetings();
+  }
+  $('show-register').addEventListener('click', () => { $('login-panel').classList.add('hidden'); $('register-panel').classList.remove('hidden'); $('login-message').replaceChildren(); });
+  $('show-login').addEventListener('click', () => { $('register-panel').classList.add('hidden'); $('login-panel').classList.remove('hidden'); $('register-message').replaceChildren(); });
+  $('login-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); const button = $('login-button'); button.disabled = true; button.textContent = 'Signing in…';
+    try {
+      const result = await api('/auth/login', {method:'POST', body:JSON.stringify({email:$('email').value,password:$('password').value})});
+      token = result.access_token; sessionStorage.setItem('meets_token', token); await enterWorkspace();
+    } catch (error) { showMessage($('login-message'), error.message, true); }
+    finally { button.disabled = false; button.textContent = 'Sign in'; }
+  });
+  $('register-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); const button = $('register-button'); button.disabled = true; button.textContent = 'Creating workspace…';
+    try {
+      const organization = await api('/organizations/', {method:'POST', body:JSON.stringify({name:$('org-name').value.trim()})});
+      await api('/users/', {method:'POST', body:JSON.stringify({email:$('reg-email').value.trim(),name:$('reg-name').value.trim(),password:$('reg-password').value,organization_id:organization.id})});
+      $('email').value = $('reg-email').value.trim(); $('password').value = $('reg-password').value;
+      showMessage($('register-message'), 'Workspace created. Signing you in…');
+      const result = await api('/auth/login', {method:'POST',body:JSON.stringify({email:$('email').value,password:$('password').value})});
+      token = result.access_token; sessionStorage.setItem('meets_token',token); await enterWorkspace();
+    } catch (error) { showMessage($('register-message'),error.message,true); }
+    finally { button.disabled = false; button.textContent = 'Create account'; }
+  });
+  $('logout').addEventListener('click', () => { token = null; currentUser = null; meetingsCache = []; sessionStorage.removeItem('meets_token'); $('workspace').classList.add('hidden'); $('login-panel').classList.remove('hidden'); $('results').replaceChildren(); $('meeting-list').replaceChildren(); });
+  function renderMeetingList() {
+    const list = $('meeting-list'); list.replaceChildren();
+    const query = $('search').value.trim().toLowerCase();
+    const visible = meetingsCache.filter(item => `${item.title} ${item.description || ''}`.toLowerCase().includes(query));
+    if (!visible.length) {
+      const empty = document.createElement('div'); empty.className = 'panel empty';
+      const title = document.createElement('strong'); title.textContent = meetingsCache.length ? 'No matches' : 'Your calendar is clear';
+      const note = document.createElement('span'); note.textContent = meetingsCache.length ? 'Try another search.' : 'Create a meeting above and it will appear here.';
+      empty.append(title,note); list.append(empty); return;
+    }
+    for (const item of visible) {
+      const card = document.createElement('article'); card.className = 'panel meeting';
+      const copy = document.createElement('div'); const title = document.createElement('h3'); title.textContent = item.title;
+      const description = document.createElement('p'); description.textContent = item.scheduled_start ? `Scheduled ${new Date(item.scheduled_start).toLocaleString()}${item.description ? ` · ${item.description}` : ''}` : (item.description || `Created ${new Date(item.created_at).toLocaleDateString()}`);
+      const actions = document.createElement('div'); actions.className = 'meeting-actions';
+      const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = item.status;
+      actions.append(badge);
+      if (item.organizer_id === currentUser.id && item.status !== 'cancelled' && item.status !== 'completed') {
+        const cancel = document.createElement('button'); cancel.className = 'cancel-button'; cancel.textContent = 'Cancel'; cancel.type = 'button';
+        cancel.addEventListener('click', async () => {
+          cancel.disabled = true;
+          try { await api(`/meetings/${item.id}/cancel`, {method:'POST'}); await refreshMeetings(); showMessage($('results'),`“${item.title}” has been cancelled.`); }
+          catch (error) { showMessage($('results'),error.message,true); cancel.disabled = false; }
+        }); actions.append(cancel);
+      }
+      copy.append(title,description); card.append(copy,actions); list.append(card);
+    }
+  }
+  async function refreshMeetings() {
+    meetingsCache = await api('/meetings/');
+    $('total-count').textContent = meetingsCache.length;
+    $('open-count').textContent = meetingsCache.filter(item => item.status === 'open' || item.status === 'scheduling').length;
+    $('scheduled-count').textContent = meetingsCache.filter(item => item.status === 'scheduled').length;
+    renderMeetingList();
+  }
+  $('search').addEventListener('input',renderMeetingList);
+  function getTiming(raw) {
+    let text = raw;
+    const durationMatch = text.match(/\b(\d+)\s*(minutes?|mins?|hours?|hrs?)\b/i);
+    let duration = 60;
+    if (durationMatch) {
+      duration = Number(durationMatch[1]) * (/^(h|hour)/i.test(durationMatch[2]) ? 60 : 1);
+      text = text.replace(durationMatch[0], ' ');
+    }
+    let targetDay = null;
+    const dayAfter = text.match(/\bday after tomorrow\b/i);
+    const relative = text.match(/\b(today|tonight|tomorrow)\b/i);
+    const isoDate = text.match(/\b(\d{4})-(\d{2})-(\d{2})\b/);
+    const weekday = text.match(/\b(?:next\s+)?(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i);
+    const monthDate = text.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})(?:,?\s+(\d{4}))?\b/i);
+    const now = new Date(); targetDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (dayAfter) { targetDay.setDate(targetDay.getDate() + 2); text = text.replace(dayAfter[0], ' '); }
+    else if (relative) { if (/tomorrow/i.test(relative[0])) targetDay.setDate(targetDay.getDate() + 1); text = text.replace(relative[0], ' '); }
+    else if (isoDate) { targetDay = new Date(Number(isoDate[1]), Number(isoDate[2])-1, Number(isoDate[3])); text = text.replace(isoDate[0], ' '); }
+    else if (weekday) {
+      const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+      let delta = (days.indexOf(weekday[1].toLowerCase()) - targetDay.getDay() + 7) % 7;
+      if (delta === 0 || /^next/i.test(weekday[0])) delta += 7;
+      targetDay.setDate(targetDay.getDate() + delta); text = text.replace(weekday[0], ' ');
+    } else if (monthDate) {
+      const parsed = new Date(`${monthDate[1]} ${monthDate[2]}, ${monthDate[3] || now.getFullYear()}`);
+      if (!monthDate[3] && parsed < targetDay) parsed.setFullYear(parsed.getFullYear()+1);
+      targetDay = parsed; text = text.replace(monthDate[0], ' ');
+    }
+    let hour = null, minute = 0;
+    const ampm = text.match(/\b(1[0-2]|0?[1-9])(?::([0-5]\d))?\s*(a\.?m\.?|p\.?m\.?)\b/i);
+    const military = !ampm && text.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/);
+    const timeMatch = ampm || military;
+    if (ampm) { hour = Number(ampm[1]) % 12 + (/^p/i.test(ampm[3]) ? 12 : 0); minute = Number(ampm[2] || 0); }
+    else if (military) { hour = Number(military[1]); minute = Number(military[2]); }
+    if (timeMatch) text = text.replace(timeMatch[0], ' ');
+    if (hour === null) return {duration, text, start:null};
+    targetDay.setHours(hour, minute, 0, 0);
+    if (!relative && !dayAfter && !isoDate && !weekday && !monthDate && targetDay <= now) targetDay.setDate(targetDay.getDate()+1);
+    return {duration, text, start:targetDay};
+  }
+  function localIso(date) {
+    const two = value => String(value).padStart(2,'0');
+    return `${date.getFullYear()}-${two(date.getMonth()+1)}-${two(date.getDate())}T${two(date.getHours())}:${two(date.getMinutes())}:00`;
+  }
+  async function applySchedule(meeting, timing) {
+    if (!timing.start) throw new Error('Add a day and time, like “tomorrow at 3pm” or “Friday at 14:30”.');
+    const end = new Date(timing.start.getTime() + timing.duration*60000);
+    const updated = await api(`/meetings/${meeting.id}/schedule`, {method:'POST',body:JSON.stringify({start_time:localIso(timing.start),end_time:localIso(end)})});
+    return updated;
+  }
+  async function runCommand(raw) {
+    const command = raw.trim(); const results = $('results');
+    if (/^(show|list|view|refresh)\s+(my\s+)?(meetings|calendar)/i.test(command) || /^(meetings|calendar)$/i.test(command)) {
+      await refreshMeetings(); showMessage(results,`Here are your ${meetingsCache.length} meetings.`); return;
+    }
+    const createIntent = /^(?:please\s+)?(?:create|make|add|plan)\b/i.test(command) || /^(?:schedule|book)\s+(?:a|the)\s+meeting\b/i.test(command);
+    const scheduleIntent = /^(?:please\s+)?(?:schedule|book|set|move|reschedule)\b/i.test(command) && !createIntent;
+    const timing = getTiming(command);
+    if (createIntent) {
+      let title = timing.text.replace(/^(?:please\s+)?(?:create|make|add|plan|schedule|book)\s+/i,'');
+      title = title.replace(/^(?:a|the)\s+meeting\s*/i,'').replace(/^(?:meeting\s+)?(?:called|named|titled)\s+/i,'');
+      title = title.replace(/\b(?:for|on|at|around|starting|beginning)\b.*$/i,'').replace(/[,.!?;:—-]+$/,'').trim();
+      if (!title) throw new Error('Tell me what to call the meeting, for example “Create a meeting called Product sync”.');
+      const hasTimeRequest = /\b(?:at|tomorrow|today|tonight|monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d{4}-\d{2}-\d{2})\b/i.test(command);
+      if (hasTimeRequest && !timing.start) throw new Error('I found the meeting request but need a time too, like “tomorrow at 3pm”.');
+      let meeting = await api('/meetings/', {method:'POST', body:JSON.stringify({title,description:null,organization_id:currentUser.organization_id})});
+      if (hasTimeRequest) {
+        meeting = await applySchedule(meeting,timing);
+        showMessage(results,`Created “${meeting.title}” for ${new Date(meeting.scheduled_start).toLocaleString()} (${timing.duration} min).`);
+      } else showMessage(results,`Created “${meeting.title}”. Add a time by saying “Schedule ${meeting.title} tomorrow at 3pm”.`);
+      await refreshMeetings(); return;
+    }
+    if (scheduleIntent) {
+      if (!timing.start) throw new Error('Add a day and time, like “Schedule Product sync tomorrow at 3pm”.');
+      let title = timing.text.replace(/^(?:please\s+)?(?:schedule|book|set|move|reschedule)\s+/i,'');
+      title = title.replace(/^(?:the\s+)?meeting\s+/i,'').replace(/\b(?:for|on|at|around|to)\b.*$/i,'').replace(/[,.!?;:—-]+$/,'').trim();
+      const meeting = meetingsCache.filter(item => item.title.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(item.title.toLowerCase())).sort((a,b)=>b.title.length-a.title.length)[0];
+      if (!meeting) throw new Error(title ? `I couldn’t find a meeting matching “${title}”. Create it first or use its full name.` : 'Tell me which meeting to schedule, then add a day and time.');
+      const updated = await applySchedule(meeting,timing);
+      showMessage(results,`Scheduled “${updated.title}” for ${new Date(updated.scheduled_start).toLocaleString()} (${timing.duration} min).`); await refreshMeetings(); return;
+    }
+    showMessage(results, 'Try “Create a meeting called Product sync tomorrow at 3pm for 30 minutes”, “Schedule Product sync Friday at 2pm”, or “Show my meetings”.');
+  }
+  $('command-form').addEventListener('submit', async (event) => {
+    event.preventDefault(); const field = $('command'), button = $('send-button'); button.disabled = true;
+    try { await runCommand(field.value); field.value = ''; }
+    catch (error) { showMessage($('results'), error.message, true); }
+    finally { button.disabled = false; field.focus(); }
+  });
+  document.querySelectorAll('.example').forEach(button => button.addEventListener('click', () => { $('command').value = button.dataset.command; $('command-form').requestSubmit(); }));
+  if (token) enterWorkspace().catch(() => { token = null; sessionStorage.removeItem('meets_token'); });
+</script>
+</body>
+</html>

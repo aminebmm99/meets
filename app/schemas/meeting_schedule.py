@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, model_validator
 
 
-class _AvailabilityTimeRange(BaseModel):
+class SelectSlotRequest(BaseModel):
     start_time: datetime
     end_time: datetime
 
@@ -16,20 +16,3 @@ class _AvailabilityTimeRange(BaseModel):
         if self.start_time >= self.end_time:
             raise ValueError("Start time must be before end time")
         return self
-
-
-class AvailabilityCreate(_AvailabilityTimeRange):
-    pass
-
-
-class AvailabilityUpdate(_AvailabilityTimeRange):
-    pass
-
-
-class AvailabilityResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    participant_id: int
-    start_time: datetime
-    end_time: datetime

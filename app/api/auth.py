@@ -4,7 +4,6 @@ from app.schemas.user import TokenResponse, UserLogin
 from app.api.dependencies import get_db
 from app.core.security import verify_password,create_access_token
 from app.models.user import User
-from app.schemas.user import UserLogin
 
 
 router = APIRouter(
@@ -42,7 +41,6 @@ def login(
         )
 
     return {
-        "message": "Login successful",
-        "user_id": user.id,
-        "access_token": create_access_token(user.id)
+        "access_token": create_access_token(user.id),
+        "token_type": "bearer"
     }

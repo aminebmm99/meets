@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -12,22 +12,27 @@ class SchedulingRequest(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     meeting_id: Mapped[int] = mapped_column(
-    ForeignKey("meetings.id"),
-    nullable=False,
-    index=True
-)
+        ForeignKey("meetings.id"),
+        nullable=False,
+        index=True
+    )
 
     created_by: Mapped[int] = mapped_column(
-    ForeignKey("users.id"),
-    nullable=False,
-    index=True
-)
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True
+    )
+
+    duration_minutes: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False
+    )
 
     status: Mapped[str] = mapped_column(
-    String(50),
-    nullable=False,
-    default="pending"
-)
+        String(50),
+        nullable=False,
+        default="pending"
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -36,5 +41,4 @@ class SchedulingRequest(Base):
     )
 
     meeting: Mapped["Meeting"] = relationship()
-
     creator: Mapped["User"] = relationship()

@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from fastapi import Depends, FastAPI
+from fastapi.responses import FileResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from app.api.meetings import router as meetings_router
@@ -14,6 +17,13 @@ app = FastAPI(
     version="1.0.0"
 )
 
+WEB_PAGE = Path(__file__).parent / "static" / "index.html"
+
+
+@app.get("/", include_in_schema=False)
+def home_page():
+    return FileResponse(WEB_PAGE)
+
 
 app.include_router(organizations_router)
 app.include_router(users_router)
@@ -22,8 +32,11 @@ app.include_router(meetings_router)
 app.include_router(participants_router)
 app.include_router(availability_router)
 from app.api.scheduling import router as scheduling_router
-
+from app.api.scheduling_requests import (
+    router as scheduling_requests_router
+)
 app.include_router(scheduling_router)
+app.include_router(scheduling_requests_router)
 
 @app.get("/health")
 def health_check():

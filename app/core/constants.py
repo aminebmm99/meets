@@ -1,0 +1,5 @@
+MEETING_OPEN = "open"
+MEETING_SCHEDULING = "scheduling"
+MEETING_SCHEDULED = "scheduled"
+MEETING_CANCELLED = "cancelled"
+MEETING_COMPLETED = "completed"

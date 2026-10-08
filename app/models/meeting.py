@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 
+
 class Meeting(Base):
     __tablename__ = "meetings"
 
@@ -32,6 +33,21 @@ class Meeting(Base):
         ForeignKey("organizations.id"),
         nullable=False,
         index=True
+    )
+    status: Mapped[str] = mapped_column(
+    String(50),
+    nullable=False,
+    default="open"
+)
+
+    scheduled_start: Mapped[Optional[datetime]] = mapped_column(
+    DateTime,
+    nullable=True
+    )
+
+    scheduled_end: Mapped[Optional[datetime]] = mapped_column(
+    DateTime,
+    nullable=True
     )
 
     created_at: Mapped[datetime] = mapped_column(

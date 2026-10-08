@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.exc import IntegrityError
+from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.api.auth_dependencies import get_current_user
@@ -79,7 +81,14 @@ def add_participant(
     )
 
     db.add(participant)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="User is already a participant"
+        )
     db.refresh(participant)
 
     return participant
@@ -90,7 +99,9 @@ def add_participant(
 def get_participants(
     meeting_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    limit: Optional[int] = Query(None, ge=1, le=100),
+    offset: int = Query(0, ge=0)
 ):
     meeting = db.get(Meeting, meeting_id)
 
@@ -106,11 +117,14 @@ def get_participants(
             detail="You do not have access to this meeting"
         )
 
-    participants = (
+    query = (
         db.query(Participant)
         .filter(Participant.meeting_id == meeting_id)
-        .all()
+        .order_by(Participant.id)
     )
+    if limit is not None:
+        query = query.limit(limit)
+    participants = query.offset(offset).all()
 
     return participants
 
