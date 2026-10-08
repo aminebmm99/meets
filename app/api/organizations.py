@@ -32,10 +32,42 @@ def create_organization(
 
 
 @router.get(
+    "/",
+    response_model=list[OrganizationResponse]
+)
+def get_organizations(
+    db: Session = Depends(get_db)
+):
+    organizations = db.query(Organization).all()
+
+    return organizations
+@router.put(
     "/{organization_id}",
     response_model=OrganizationResponse
 )
-def get_organization(
+def update_organization(
+    organization_id: int,
+    organization_data: OrganizationCreate,
+    db: Session = Depends(get_db)
+):
+    organization = db.get(Organization, organization_id)
+
+    if organization is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Organization not found"
+        )
+
+    organization.name = organization_data.name
+
+    db.commit()
+    db.refresh(organization)
+
+    return organization
+@router.delete(
+    "/{organization_id}"
+)
+def delete_organization(
     organization_id: int,
     db: Session = Depends(get_db)
 ):
@@ -47,4 +79,9 @@ def get_organization(
             detail="Organization not found"
         )
 
-    return organization
+    db.delete(organization)
+    db.commit()
+
+    return {
+        "message": "Organization deleted successfully"
+    }
